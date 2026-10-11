@@ -1,0 +1,592 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lost Stars ♔</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 24px 14px;
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 20% 15%, #153b69 0%, transparent 35%),
+        radial-gradient(ellipse at 85% 75%, #102c52 0%, transparent 38%),
+        linear-gradient(160deg, #020817, #071831, #0c2547, #030c1d);
+      color: #dcf3ff;
+      font-family: Georgia, "Times New Roman", serif;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      overflow-x: hidden;
+    }
+
+    /* Background stars */
+    #starfield {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .galaxy {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 560px;
+      padding: 15px;
+      text-align: center;
+      color: #dcf3ff;
+      background: linear-gradient(
+        160deg,
+        rgba(3, 12, 29, 0.94),
+        rgba(11, 35, 71, 0.94),
+        rgba(21, 73, 120, 0.9),
+        rgba(9, 27, 56, 0.95),
+        rgba(3, 12, 29, 0.97)
+      );
+      border: 2px solid #70c7ff;
+      border-radius: 16px;
+      box-shadow:
+        0 0 18px #368ed4,
+        0 0 45px rgba(54, 142, 212, 0.2),
+        inset 0 0 25px rgba(68, 157, 230, 0.08);
+      overflow: hidden;
+    }
+
+    .ornament {
+      color: #8bcfff;
+      letter-spacing: 4px;
+      font-size: 16px;
+      animation: shimmer 4s ease-in-out infinite;
+    }
+
+    .eyebrow {
+      color: #8dc8f7;
+      letter-spacing: 3px;
+      font-size: 11px;
+      margin-top: 9px;
+    }
+
+    h1 {
+      font-size: clamp(23px, 6vw, 30px);
+      color: #e8f8ff;
+      text-shadow: 0 0 7px #70caff, 0 0 17px #2586e8;
+      margin: 13px 0 5px;
+    }
+
+    .tagline {
+      font-style: italic;
+      color: #a6daff;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .moon-divider {
+      font-size: 20px;
+      color: #6bb9f4;
+      margin: 13px 0;
+    }
+
+    .welcome {
+      background: linear-gradient(90deg, #12365c, #1b5385, #12365c);
+      border: 1px solid #619ed6;
+      border-radius: 10px;
+      padding: 13px;
+      margin: 12px 0;
+    }
+
+    .section-title {
+      color: #c7ebff;
+      font-size: 16px;
+    }
+
+    p {
+      line-height: 1.8;
+    }
+
+    .welcome p {
+      font-size: 13px;
+      color: #d5ebff;
+      margin: 10px 0;
+    }
+
+    .small-italic {
+      color: #92ccfb;
+      font-size: 12px;
+      font-style: italic;
+    }
+
+    .separator {
+      color: #a2d9ff;
+      font-size: 15px;
+      letter-spacing: 3px;
+      margin: 18px 0;
+      overflow-wrap: anywhere;
+    }
+
+    .galaxy-title {
+      color: #b5e7ff;
+      font-size: 17px;
+      text-shadow: 0 0 8px #3f9be5;
+    }
+
+    .features {
+      font-size: 13px;
+      color: #b7dcf5;
+      line-height: 2;
+      margin: 12px 0;
+    }
+
+    .little-stars {
+      color: #83caff;
+      font-size: 19px;
+      margin: 12px 0;
+    }
+
+    .message {
+      background: rgba(7, 24, 49, 0.9);
+      border: 1px solid #4e9bdb;
+      border-radius: 9px;
+      padding: 13px;
+      margin: 14px 0;
+    }
+
+    .message-heading {
+      color: #8ed4ff;
+      font-size: 12px;
+      letter-spacing: 2px;
+    }
+
+    .quote {
+      font-size: 14px;
+      font-style: italic;
+      color: #e0f3ff;
+      line-height: 1.8;
+    }
+
+    .constellation {
+      font-size: 17px;
+      color: #8ccafa;
+      line-height: 2.2;
+      letter-spacing: 4px;
+      margin: 15px 0;
+    }
+
+    .constellation-caption {
+      font-size: 12px;
+      color: #a8d9fc;
+      font-style: italic;
+    }
+
+    .invitation {
+      background: linear-gradient(135deg, #10365d, #24629b, #10365d);
+      border: 1px solid #83d4ff;
+      border-radius: 12px;
+      padding: 15px;
+      margin-top: 12px;
+      box-shadow: 0 0 13px #266fb1;
+    }
+
+    .invitation-title {
+      font-size: 19px;
+      color: #e1f6ff;
+      text-shadow: 0 0 9px #85d4ff;
+    }
+
+    .invitation p {
+      font-size: 13px;
+      color: #c6e7ff;
+      line-height: 1.8;
+    }
+
+    .invited {
+      color: #d5efff;
+      font-size: 14px;
+    }
+
+    .invite-button {
+      display: block;
+      width: 100%;
+      background: linear-gradient(90deg, #247ac1, #59b8f5, #247ac1);
+      color: #fff;
+      text-decoration: none;
+      border: 2px solid #c4efff;
+      border-radius: 10px;
+      padding: 14px 6px;
+      margin: 16px 0 8px;
+      font-family: inherit;
+      font-weight: bold;
+      font-size: 14px;
+      letter-spacing: 1px;
+      text-shadow: 0 0 5px #135187;
+      box-shadow: 0 0 13px #63c6ff;
+      cursor: pointer;
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        filter 0.2s ease;
+    }
+
+    .invite-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 22px #63c6ff;
+      filter: brightness(1.12);
+    }
+
+    .invite-button:active {
+      transform: scale(0.98);
+    }
+
+    .invite-button:focus-visible {
+      outline: 2px solid white;
+      outline-offset: 4px;
+    }
+
+    .club-name {
+      color: #b2dfff;
+      font-size: 11px;
+    }
+
+    .cosmos {
+      color: #90c9f4;
+      font-size: 11px;
+      letter-spacing: 2px;
+    }
+
+    .closing {
+      color: #9cd7ff;
+      font-size: 18px;
+      margin: 17px 0;
+    }
+
+    .final-words {
+      color: #c2e8ff;
+      font-size: 13px;
+      letter-spacing: 2px;
+      margin-top: 12px;
+    }
+
+    .footer-ornament {
+      color: #8acbff;
+      font-size: 15px;
+      margin-top: 17px;
+      letter-spacing: 4px;
+    }
+
+    .last-line {
+      color: #d0edff;
+      font-size: 13px;
+      margin-top: 12px;
+      text-shadow: 0 0 8px #3f9be5;
+    }
+
+    @keyframes shimmer {
+      0%, 100% {
+        opacity: 0.7;
+        text-shadow: 0 0 4px #70caff;
+      }
+      50% {
+        opacity: 1;
+        text-shadow: 0 0 12px #70caff, 0 0 20px #2586e8;
+      }
+    }
+
+    @media (max-width: 400px) {
+      body {
+        padding: 12px 8px;
+      }
+
+      .galaxy {
+        padding: 12px;
+      }
+
+      .welcome,
+      .message,
+      .invitation {
+        padding: 11px;
+      }
+
+      .separator {
+        letter-spacing: 1px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <canvas id="starfield" aria-hidden="true"></canvas>
+
+  <main class="galaxy">
+
+    <div class="ornament">✦ ⋆ ˚｡⋆ ✧ ⋆｡˚ ✦</div>
+
+    <div class="eyebrow">☾ BEYOND THE STARS ☽</div>
+
+    <h1>✧ LOST STARS ✧</h1>
+
+    <div class="tagline">
+      Where lost stars find their way home.
+    </div>
+
+    <div class="moon-divider">☾ ⋆ ✦ ⋆ ✧ ⋆ ✦ ⋆ ☽</div>
+
+    <section class="welcome">
+      <div class="section-title">✦ WELCOME, TRAVELER ✦</div>
+
+      <p>
+        Somewhere between the moonlight and the stars,
+        a little corner of the universe is waiting for you.
+      </p>
+
+      <div class="small-italic">
+        Every star has a story. Every move begins a new one.
+      </div>
+    </section>
+
+    <div class="separator">✧ · ───── ✦ ───── · ✧</div>
+
+    <section>
+      <div class="galaxy-title">♔ OUR LITTLE GALAXY ♕</div>
+
+      <p class="features">
+        ✦ Chess beneath the stars<br>
+        ☾ A place to belong<br>
+        ✧ New friends &amp; new adventures<br>
+        ♡ A universe of possibilities<br>
+        ⋆ A little bit of chaos
+      </p>
+
+      <div class="little-stars">⋆｡°✩ ☾ ✩°｡⋆</div>
+    </section>
+
+    <section class="message">
+      <div class="message-heading">
+        ✦ A MESSAGE FROM THE STARS ✦
+      </div>
+
+      <p class="quote">
+        "Not all those who wander are lost.
+        Some are simply searching for their constellation."
+      </p>
+
+      <div style="color:#72baf0;">✧ ⋆ ✧</div>
+    </section>
+
+    <div class="separator">✧ · ───── ✦ ───── · ✧</div>
+
+    <section>
+      <div class="constellation">
+        ✦ · · ✧ · ⋆<br>
+        · ✧ · ✦ ·<br>
+        ⋆ · ✦ · ✧<br>
+        · · ✧ · ✦
+      </div>
+
+      <div class="constellation-caption">
+        Even the smallest stars shine brightest together.
+      </div>
+    </section>
+
+    <div class="separator">✧ · ───── ✦ ───── · ✧</div>
+
+    <section class="invitation">
+      <div class="invitation-title">✦ FIND YOUR PLACE ✦</div>
+
+      <p>
+        The night sky is endless,<br>
+        but there's always room<br>
+        for one more star.
+      </p>
+
+      <div class="invited">♡ You're invited ♡</div>
+
+      <a
+        id="inviteButton"
+        class="invite-button"
+        href="https://www.chess.com/club/lost-stars/join/8f6546?utm_campaign=club_invite_link&amp;utm_source=chesscom&amp;utm_medium=copy"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        ✧ COPY INVITE LINK ✧
+      </a>
+
+      <div class="club-name">✦ Lost Stars Chess Club ✦</div>
+    </section>
+
+    <div class="closing">☾ ⋆⁺₊✧ ₊˚⊹♡⊹˚₊ ✧₊⁺⋆ ☽</div>
+
+    <div class="cosmos">SOMEWHERE IN THE COSMOS</div>
+
+    <div class="footer-ornament">✧ ⋆ ˚｡⋆ ✦ ⋆｡˚ ⋆ ✧</div>
+
+    <div class="final-words">♔ MAY YOUR STARS ALIGN ♕</div>
+
+    <div class="last-line">
+      Forever among the stars. ✦
+    </div>
+
+  </main>
+
+  <script>
+    // Twinkling animated starfield
+    (() => {
+      const canvas = document.getElementById("starfield");
+      const ctx = canvas.getContext("2d");
+
+      if (!ctx) return;
+
+      let stars = [];
+      let width = 0;
+      let height = 0;
+      let animationId;
+
+      const reducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches;
+
+      function resizeCanvas() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+        width = window.innerWidth;
+        height = window.innerHeight;
+
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        canvas.style.width = width + "px";
+        canvas.style.height = height + "px";
+
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        const count = Math.min(
+          180,
+          Math.floor((width * height) / 5000)
+        );
+
+        stars = Array.from({ length: count }, () => ({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          radius: Math.random() * 1.4 + 0.3,
+          alpha: Math.random() * 0.65 + 0.2,
+          speed: Math.random() * 0.012 + 0.003,
+          phase: Math.random() * Math.PI * 2
+        }));
+
+        if (reducedMotion) drawStars(0);
+      }
+
+      function drawStars(time) {
+        ctx.clearRect(0, 0, width, height);
+
+        for (const star of stars) {
+          const twinkle = reducedMotion
+            ? 0
+            : Math.sin(time * star.speed + star.phase) * 0.3;
+
+          const alpha = Math.max(
+            0.1,
+            Math.min(1, star.alpha + twinkle)
+          );
+
+          ctx.beginPath();
+          ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+
+          ctx.fillStyle = `rgba(190, 225, 255, ${alpha})`;
+          ctx.shadowBlur = star.radius > 1.2 ? 8 : 3;
+          ctx.shadowColor = "#70caff";
+          ctx.fill();
+        }
+
+        ctx.shadowBlur = 0;
+
+        if (!reducedMotion) {
+          animationId = requestAnimationFrame(drawStars);
+        }
+      }
+
+      window.addEventListener("resize", resizeCanvas);
+
+      resizeCanvas();
+
+      if (!reducedMotion) {
+        animationId = requestAnimationFrame(drawStars);
+      }
+
+      window.addEventListener("pagehide", () => {
+        if (animationId) {
+          cancelAnimationFrame(animationId);
+        }
+      });
+    })();
+
+    // Copy the invite URL when the button is clicked.
+    (() => {
+      const button = document.getElementById("inviteButton");
+
+      const originalText = "✧ COPY INVITE LINK ✧";
+
+      button.addEventListener("click", async (event) => {
+        event.preventDefault();
+
+        const inviteURL = button.href;
+
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(inviteURL);
+          } else {
+            const temporaryInput = document.createElement("textarea");
+
+            temporaryInput.value = inviteURL;
+            temporaryInput.style.position = "fixed";
+            temporaryInput.style.opacity = "0";
+
+            document.body.appendChild(temporaryInput);
+            temporaryInput.select();
+
+            const copied = document.execCommand("copy");
+            temporaryInput.remove();
+
+            if (!copied) {
+              throw new Error("Copy was unsuccessful");
+            }
+          }
+
+          button.textContent = "✦ LINK COPIED! ✦";
+
+          setTimeout(() => {
+            button.textContent = originalText;
+          }, 2200);
+
+        } catch (error) {
+          // Keep the actual invite link accessible if copying fails.
+          button.textContent = "✦ OPEN INVITE LINK ✦";
+          window.open(inviteURL, "_blank", "noopener,noreferrer");
+
+          setTimeout(() => {
+            button.textContent = originalText;
+          }, 2200);
+        }
+      });
+    })();
+  </script>
+
+</body>
+</html>
