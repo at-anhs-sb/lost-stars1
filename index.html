@@ -2,591 +2,1451 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lost Stars ♔</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#030817">
+<title>Lost Stars ♔</title>
+<style>
+:root {
+  --bg: #030817;
+  --blue: #55b9ff;
+  --ice: #c9efff;
+  --violet: #a78bfa;
+  --text: #e9f5ff;
+  --panel: rgba(7, 18, 43, .84);
+  --edge: rgba(116, 198, 255, .55);
+  --depth: #123d70;
+  --accent: #5bd6ff;
+  --mx: 50%;
+  --my: 35%;
+}
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+* {
+  box-sizing: border-box;
+}
 
-    body {
-      margin: 0;
-      padding: 24px 14px;
-      min-height: 100vh;
-      background:
-        radial-gradient(ellipse at 20% 15%, #153b69 0%, transparent 35%),
-        radial-gradient(ellipse at 85% 75%, #102c52 0%, transparent 38%),
-        linear-gradient(160deg, #020817, #071831, #0c2547, #030c1d);
-      color: #dcf3ff;
-      font-family: Georgia, "Times New Roman", serif;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      overflow-x: hidden;
-    }
+html {
+  min-height: 100%;
+  background: var(--bg);
+  scroll-behavior: smooth;
+}
 
-    /* Background stars */
-    #starfield {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 0;
-    }
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100svh;
+  width: 100%;
+  overflow-x: hidden;
+  color: var(--text);
+  font-family: Georgia, "Times New Roman", serif;
+  background:
+    radial-gradient(ellipse at var(--mx) var(--my), rgba(30, 100, 190, .2), transparent 45%),
+    radial-gradient(ellipse at 10% 80%, rgba(89, 57, 175, .16), transparent 42%),
+    radial-gradient(ellipse at 90% 10%, rgba(17, 110, 183, .15), transparent 40%),
+    linear-gradient(155deg, #020512 0%, #07142e 48%, #030918 100%);
+}
 
-    .galaxy {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      max-width: 560px;
-      padding: 15px;
-      text-align: center;
-      color: #dcf3ff;
-      background: linear-gradient(
-        160deg,
-        rgba(3, 12, 29, 0.94),
-        rgba(11, 35, 71, 0.94),
-        rgba(21, 73, 120, 0.9),
-        rgba(9, 27, 56, 0.95),
-        rgba(3, 12, 29, 0.97)
-      );
-      border: 2px solid #70c7ff;
-      border-radius: 16px;
-      box-shadow:
-        0 0 18px #368ed4,
-        0 0 45px rgba(54, 142, 212, 0.2),
-        inset 0 0 25px rgba(68, 157, 230, 0.08);
-      overflow: hidden;
-    }
+button, a {
+  -webkit-tap-highlight-color: transparent;
+}
 
-    .ornament {
-      color: #8bcfff;
-      letter-spacing: 4px;
-      font-size: 16px;
-      animation: shimmer 4s ease-in-out infinite;
-    }
+button {
+  font: inherit;
+}
 
-    .eyebrow {
-      color: #8dc8f7;
-      letter-spacing: 3px;
-      font-size: 11px;
-      margin-top: 9px;
-    }
+#starfield {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
 
-    h1 {
-      font-size: clamp(23px, 6vw, 30px);
-      color: #e8f8ff;
-      text-shadow: 0 0 7px #70caff, 0 0 17px #2586e8;
-      margin: 13px 0 5px;
-    }
+.nebula {
+  position: fixed;
+  inset: -25%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .38;
+  background:
+    radial-gradient(ellipse at 25% 35%, rgba(30, 101, 206, .15), transparent 28%),
+    radial-gradient(ellipse at 75% 65%, rgba(114, 68, 214, .13), transparent 30%);
+  filter: blur(35px);
+  animation: nebulaDrift 24s ease-in-out infinite alternate;
+}
 
-    .tagline {
-      font-style: italic;
-      color: #a6daff;
-      font-size: 13px;
-      line-height: 1.7;
-    }
+.page {
+  isolation: isolate;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: clamp(10px, 2vw, 25px);
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+}
 
-    .moon-divider {
-      font-size: 20px;
-      color: #6bb9f4;
-      margin: 13px 0;
-    }
+.galaxy {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  min-height: calc(100vh - 2 * clamp(10px, 2vw, 25px));
+  min-height: calc(100svh - 2 * clamp(10px, 2vw, 25px));
+  padding: clamp(18px, 4vw, 44px);
+  overflow: hidden;
+  border: 1px solid rgba(125, 204, 255, .56);
+  border-radius: clamp(15px, 2.5vw, 28px);
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(42, 112, 194, .16), transparent 50%),
+    linear-gradient(145deg, rgba(4, 13, 31, .97), rgba(8, 25, 53, .95) 45%, rgba(4, 12, 30, .98));
+  box-shadow:
+    0 0 0 1px rgba(97, 176, 255, .08),
+    0 0 35px rgba(44, 133, 226, .13),
+    0 30px 90px rgba(0, 0, 0, .45),
+    inset 0 1px rgba(220, 246, 255, .12),
+    inset 0 0 55px rgba(55, 127, 220, .055);
+  transform-style: preserve-3d;
+  animation: galaxyAppear 1s cubic-bezier(.2, .75, .2, 1) both;
+}
 
-    .welcome {
-      background: linear-gradient(90deg, #12365c, #1b5385, #12365c);
-      border: 1px solid #619ed6;
-      border-radius: 10px;
-      padding: 13px;
-      margin: 12px 0;
-    }
+.galaxy::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(152, 214, 255, .13) 0 1px, transparent 2px),
+    radial-gradient(circle at 85% 23%, rgba(185, 170, 255, .17) 0 1px, transparent 2px),
+    radial-gradient(circle at 78% 73%, rgba(120, 196, 255, .15) 0 1px, transparent 2px),
+    radial-gradient(circle at 18% 82%, rgba(120, 196, 255, .12) 0 1px, transparent 2px);
+  background-size: 140px 150px, 170px 190px, 130px 170px, 190px 160px;
+  opacity: .8;
+}
 
-    .section-title {
-      color: #c7ebff;
-      font-size: 16px;
-    }
+.galaxy::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(125deg, rgba(255,255,255,.055), transparent 17%, transparent 75%, rgba(98,170,255,.035));
+}
 
-    p {
-      line-height: 1.8;
-    }
+.topbar {
+  position: relative;
+  z-index: 6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: clamp(22px, 4vw, 42px);
+}
 
-    .welcome p {
-      font-size: 13px;
-      color: #d5ebff;
-      margin: 10px 0;
-    }
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+}
 
-    .small-italic {
-      color: #92ccfb;
-      font-size: 12px;
-      font-style: italic;
-    }
+.brand img {
+  width: 42px;
+  height: 42px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 1px solid rgba(151, 216, 255, .7);
+  box-shadow: 0 0 15px rgba(68, 163, 255, .3);
+}
 
-    .separator {
-      color: #a2d9ff;
-      font-size: 15px;
-      letter-spacing: 3px;
-      margin: 18px 0;
-      overflow-wrap: anywhere;
-    }
+.brand-copy {
+  min-width: 0;
+}
 
-    .galaxy-title {
-      color: #b5e7ff;
-      font-size: 17px;
-      text-shadow: 0 0 8px #3f9be5;
-    }
+.brand-name {
+  color: #e7f6ff;
+  font-size: 14px;
+  letter-spacing: 2px;
+  overflow-wrap: anywhere;
+}
 
-    .features {
-      font-size: 13px;
-      color: #b7dcf5;
-      line-height: 2;
-      margin: 12px 0;
-    }
+.brand-subtitle {
+  margin-top: 4px;
+  color: #80bce9;
+  font: 9px/1.5 Arial, sans-serif;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
 
-    .little-stars {
-      color: #83caff;
-      font-size: 19px;
-      margin: 12px 0;
-    }
+.top-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
 
-    .message {
-      background: rgba(7, 24, 49, 0.9);
-      border: 1px solid #4e9bdb;
-      border-radius: 9px;
-      padding: 13px;
-      margin: 14px 0;
-    }
+.icon-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  min-height: 35px;
+  padding: 8px 11px;
+  border: 1px solid rgba(113, 186, 244, .34);
+  border-radius: 9px;
+  background: rgba(15, 37, 71, .76);
+  color: #c5e8ff;
+  font: 10px Arial, sans-serif;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background .2s, border-color .2s, transform .2s, box-shadow .2s;
+}
 
-    .message-heading {
-      color: #8ed4ff;
-      font-size: 12px;
-      letter-spacing: 2px;
-    }
+.icon-button:hover {
+  background: rgba(36, 85, 142, .85);
+  border-color: #83d5ff;
+  box-shadow: 0 0 14px rgba(67, 172, 255, .15);
+}
 
-    .quote {
-      font-size: 14px;
-      font-style: italic;
-      color: #e0f3ff;
-      line-height: 1.8;
-    }
+.icon-button:active {
+  transform: translateY(2px);
+}
 
-    .constellation {
-      font-size: 17px;
-      color: #8ccafa;
-      line-height: 2.2;
-      letter-spacing: 4px;
-      margin: 15px 0;
-    }
+.hero {
+  position: relative;
+  z-index: 2;
+  max-width: 790px;
+  margin: 0 auto;
+  text-align: center;
+  perspective: 900px;
+}
 
-    .constellation-caption {
-      font-size: 12px;
-      color: #a8d9fc;
-      font-style: italic;
-    }
+.eyebrow {
+  color: #92cbff;
+  font: 10px/1.8 Arial, sans-serif;
+  letter-spacing: clamp(2px, .8vw, 5px);
+  text-transform: uppercase;
+}
 
-    .invitation {
-      background: linear-gradient(135deg, #10365d, #24629b, #10365d);
-      border: 1px solid #83d4ff;
-      border-radius: 12px;
-      padding: 15px;
-      margin-top: 12px;
-      box-shadow: 0 0 13px #266fb1;
-    }
+.ornament {
+  color: #91d7ff;
+  font-size: clamp(18px, 3vw, 25px);
+  letter-spacing: 5px;
+  margin-bottom: 13px;
+  text-shadow: 0 0 16px rgba(90, 185, 255, .6);
+  animation: shimmer 4s ease-in-out infinite;
+}
 
-    .invitation-title {
-      font-size: 19px;
-      color: #e1f6ff;
-      text-shadow: 0 0 9px #85d4ff;
-    }
+h1 {
+  margin: 14px 0 8px;
+  color: #f0faff;
+  font-size: clamp(35px, 8vw, 76px);
+  font-weight: 500;
+  letter-spacing: clamp(3px, 1.5vw, 11px);
+  line-height: 1.08;
+  text-shadow:
+    0 1px 0 #acdfff,
+    0 3px 0 #3d7eb4,
+    0 5px 0 #1a477b,
+    0 8px 18px rgba(40, 152, 255, .34),
+    0 0 38px rgba(80, 180, 255, .27);
+  transform: translateZ(22px);
+}
 
-    .invitation p {
-      font-size: 13px;
-      color: #c6e7ff;
-      line-height: 1.8;
-    }
+.tagline {
+  margin: 13px 0 0;
+  color: #b4dfff;
+  font-size: clamp(13px, 2.4vw, 17px);
+  font-style: italic;
+  line-height: 1.8;
+}
 
-    .invited {
-      color: #d5efff;
-      font-size: 14px;
-    }
+.hero-divider {
+  margin: 25px auto;
+  color: #77c5ff;
+  font-size: 17px;
+  letter-spacing: clamp(2px, 1vw, 8px);
+  opacity: .9;
+}
 
-    .invite-button {
-      display: block;
-      width: 100%;
-      background: linear-gradient(90deg, #247ac1, #59b8f5, #247ac1);
-      color: #fff;
-      text-decoration: none;
-      border: 2px solid #c4efff;
-      border-radius: 10px;
-      padding: 14px 6px;
-      margin: 16px 0 8px;
-      font-family: inherit;
-      font-weight: bold;
-      font-size: 14px;
-      letter-spacing: 1px;
-      text-shadow: 0 0 5px #135187;
-      box-shadow: 0 0 13px #63c6ff;
-      cursor: pointer;
-      transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease,
-        filter 0.2s ease;
-    }
+.intro {
+  max-width: 590px;
+  margin: 0 auto;
+  color: #b8d4ee;
+  font-size: 14px;
+  line-height: 1.9;
+}
 
-    .invite-button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 0 22px #63c6ff;
-      filter: brightness(1.12);
-    }
+.panel {
+  position: relative;
+  border: 1px solid rgba(105, 182, 247, .28);
+  border-radius: 16px;
+  background:
+    linear-gradient(145deg, rgba(14, 38, 75, .75), rgba(4, 15, 35, .87));
+  box-shadow:
+    0 8px 0 rgba(3, 9, 24, .6),
+    0 10px 24px rgba(0, 0, 0, .17),
+    inset 0 1px rgba(216, 243, 255, .055);
+  transform: translateZ(8px);
+  transition: border-color .25s, box-shadow .25s, transform .25s;
+}
 
-    .invite-button:active {
-      transform: scale(0.98);
-    }
+.panel:hover {
+  border-color: rgba(118, 204, 255, .48);
+  box-shadow:
+    0 8px 0 rgba(3, 9, 24, .6),
+    0 12px 30px rgba(27, 117, 218, .1),
+    inset 0 1px rgba(216, 243, 255, .08);
+}
 
-    .invite-button:focus-visible {
-      outline: 2px solid white;
-      outline-offset: 4px;
-    }
+.welcome {
+  max-width: 740px;
+  margin: 28px auto 0;
+  padding: clamp(18px, 3.5vw, 29px);
+  text-align: center;
+}
 
-    .club-name {
-      color: #b2dfff;
-      font-size: 11px;
-    }
+.section-heading {
+  color: #d6efff;
+  font-size: 16px;
+  letter-spacing: 1px;
+}
 
-    .cosmos {
-      color: #90c9f4;
-      font-size: 11px;
-      letter-spacing: 2px;
-    }
+.welcome p {
+  margin: 12px auto;
+  color: #c1ddf4;
+  font-size: 13px;
+  line-height: 1.9;
+}
 
-    .closing {
-      color: #9cd7ff;
-      font-size: 18px;
-      margin: 17px 0;
-    }
+.small-italic {
+  color: #8ecbfa;
+  font-size: 12px;
+  font-style: italic;
+  line-height: 1.8;
+}
 
-    .final-words {
-      color: #c2e8ff;
-      font-size: 13px;
-      letter-spacing: 2px;
-      margin-top: 12px;
-    }
+.section {
+  position: relative;
+  z-index: 2;
+  margin: 38px auto 0;
+}
 
-    .footer-ornament {
-      color: #8acbff;
-      font-size: 15px;
-      margin-top: 17px;
-      letter-spacing: 4px;
-    }
+.section-heading.center {
+  text-align: center;
+  margin-bottom: 19px;
+}
 
-    .last-line {
-      color: #d0edff;
-      font-size: 13px;
-      margin-top: 12px;
-      text-shadow: 0 0 8px #3f9be5;
-    }
+.section-caption {
+  margin-top: -10px;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #87b8df;
+  font: 11px/1.8 Arial, sans-serif;
+}
 
-    @keyframes shimmer {
-      0%, 100% {
-        opacity: 0.7;
-        text-shadow: 0 0 4px #70caff;
-      }
-      50% {
-        opacity: 1;
-        text-shadow: 0 0 12px #70caff, 0 0 20px #2586e8;
-      }
-    }
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
 
-    @media (max-width: 400px) {
-      body {
-        padding: 12px 8px;
-      }
+.feature {
+  min-width: 0;
+  min-height: 126px;
+  padding: 20px 12px;
+  text-align: center;
+}
 
-      .galaxy {
-        padding: 12px;
-      }
+.feature-icon {
+  font-size: 26px;
+  margin-bottom: 12px;
+  color: #8bd5ff;
+  text-shadow: 0 0 14px rgba(79, 176, 255, .3);
+}
 
-      .welcome,
-      .message,
-      .invitation {
-        padding: 11px;
-      }
+.feature-title {
+  color: #d7edff;
+  font-size: 13px;
+  line-height: 1.7;
+}
 
-      .separator {
-        letter-spacing: 1px;
-      }
-    }
+.feature-text {
+  margin-top: 5px;
+  color: #87b5da;
+  font: 11px/1.7 Arial, sans-serif;
+}
 
-    @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
-        animation-duration: 0.01ms !important;
-        transition-duration: 0.01ms !important;
-      }
-    }
-  </style>
+.club-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: 24px;
+  align-items: center;
+  padding: clamp(18px, 4vw, 32px);
+}
+
+.club-profile {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  min-width: 0;
+}
+
+.club-avatar {
+  flex: 0 0 auto;
+  width: clamp(70px, 12vw, 105px);
+  height: clamp(70px, 12vw, 105px);
+  object-fit: cover;
+  border: 1px solid rgba(146, 214, 255, .75);
+  border-radius: 17px;
+  box-shadow:
+    0 0 0 4px rgba(78, 159, 234, .07),
+    0 0 27px rgba(65, 157, 246, .22);
+}
+
+.club-info {
+  min-width: 0;
+}
+
+.club-label {
+  color: #83c7fa;
+  font: 9px/1.8 Arial, sans-serif;
+  letter-spacing: 2px;
+}
+
+.club-name {
+  margin: 5px 0;
+  color: #f0f8ff;
+  font-size: clamp(16px, 3vw, 22px);
+  overflow-wrap: anywhere;
+}
+
+.club-description {
+  color: #9ebfdc;
+  font: 11px/1.8 Arial, sans-serif;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.stat {
+  padding: 15px 10px;
+  border: 1px solid rgba(108, 183, 242, .23);
+  border-radius: 12px;
+  background: rgba(2, 13, 31, .6);
+  text-align: center;
+  min-width: 0;
+}
+
+.stat-value {
+  color: #e0f5ff;
+  font-size: clamp(21px, 4vw, 31px);
+  text-shadow: 0 0 15px rgba(71, 170, 255, .27);
+}
+
+.stat-label {
+  margin-top: 6px;
+  color: #87b7df;
+  font: 9px/1.7 Arial, sans-serif;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.members-panel {
+  padding: clamp(17px, 3vw, 25px);
+}
+
+.members-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 17px;
+}
+
+.members-heading .section-heading {
+  margin: 0;
+}
+
+.live-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #9ad8ff;
+  font: 9px Arial, sans-serif;
+  letter-spacing: 1px;
+}
+
+.live-dot {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: #6df6bd;
+  box-shadow: 0 0 10px rgba(109, 246, 189, .6);
+}
+
+.member-list {
+  display: grid;
+  gap: 10px;
+}
+
+.member {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 11px 13px;
+  border: 1px solid rgba(107, 175, 230, .14);
+  border-radius: 10px;
+  background: rgba(3, 13, 30, .54);
+}
+
+.member-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid rgba(121, 197, 255, .32);
+  background: linear-gradient(145deg, #204f82, #111b3c);
+  color: #dff4ff;
+  font-size: 15px;
+  overflow: hidden;
+}
+
+.member-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.member-details {
+  min-width: 0;
+  flex: 1;
+}
+
+.member-name {
+  color: #e1f2ff;
+  font: 12px/1.7 Arial, sans-serif;
+  overflow-wrap: anywhere;
+}
+
+.member-meta {
+  color: #7faed4;
+  font: 10px/1.7 Arial, sans-serif;
+}
+
+.member-rank {
+  color: #8ecbff;
+  font-size: 15px;
+  flex: 0 0 auto;
+}
+
+.member-status {
+  margin-top: 13px;
+  color: #789cbd;
+  font: 10px/1.8 Arial, sans-serif;
+  text-align: center;
+}
+
+.message {
+  max-width: 750px;
+  margin: 38px auto 0;
+  padding: clamp(22px, 4vw, 32px);
+  text-align: center;
+}
+
+.quote-mark {
+  color: #79c9ff;
+  font-size: 27px;
+  margin-bottom: 7px;
+}
+
+.quote {
+  color: #d5ebff;
+  font-size: clamp(14px, 2.5vw, 17px);
+  font-style: italic;
+  line-height: 1.9;
+}
+
+.quote-attribution {
+  color: #84b8e1;
+  margin-top: 13px;
+  font: 10px Arial, sans-serif;
+  letter-spacing: 2px;
+}
+
+.invitation {
+  position: relative;
+  z-index: 2;
+  max-width: 750px;
+  margin: 35px auto 0;
+  padding: clamp(23px, 4vw, 36px);
+  border: 1px solid rgba(120, 205, 255, .48);
+  border-radius: 17px;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(70, 155, 255, .16), transparent 65%),
+    linear-gradient(145deg, rgba(14, 40, 78, .92), rgba(5, 16, 39, .96));
+  box-shadow:
+    0 7px 0 #07152b,
+    0 10px 28px rgba(0, 0, 0, .23),
+    inset 0 1px rgba(255, 255, 255, .09);
+  text-align: center;
+}
+
+.invitation-title {
+  color: #e7f6ff;
+  font-size: clamp(18px, 3.5vw, 24px);
+  letter-spacing: 2px;
+  text-shadow: 0 0 18px rgba(92, 183, 255, .3);
+}
+
+.invitation p {
+  color: #b6d8f4;
+  font-size: 13px;
+  line-height: 1.9;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 13px;
+  margin: 22px auto 0;
+}
+
+.space-button {
+  --button-top: #55bfff;
+  --button-bottom: #2677d0;
+  --button-side: #154c8a;
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 9px;
+  min-height: 48px;
+  min-width: min(100%, 205px);
+  padding: 13px 21px;
+  overflow: hidden;
+  border: 1px solid rgba(201, 238, 255, .7);
+  border-radius: 11px;
+  background: linear-gradient(115deg, var(--button-top), var(--button-bottom) 65%, var(--button-top));
+  background-size: 220% 100%;
+  background-position: 0% 50%;
+  color: #fff;
+  text-decoration: none;
+  text-align: center;
+  font: bold 11px/1.5 Arial, sans-serif;
+  letter-spacing: 1px;
+  text-shadow: 0 1px 3px rgba(0, 19, 50, .5);
+  box-shadow:
+    0 5px 0 var(--button-side),
+    0 7px 0 rgba(0, 0, 0, .22),
+    0 9px 20px rgba(23, 117, 211, .16),
+    inset 0 1px rgba(255, 255, 255, .35);
+  cursor: pointer;
+  transform: translateY(0);
+  transition:
+    transform .17s ease,
+    box-shadow .17s ease,
+    background-position .4s ease,
+    filter .2s ease;
+}
+
+.space-button::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 15%, rgba(255,255,255,.32) 48%, transparent 75%);
+  transform: translateX(-120%);
+  transition: transform .5s ease;
+}
+
+.space-button:hover {
+  background-position: 100% 50%;
+  filter: brightness(1.12);
+  transform: translateY(-2px);
+  box-shadow:
+    0 7px 0 var(--button-side),
+    0 9px 0 rgba(0, 0, 0, .2),
+    0 12px 26px rgba(54, 155, 255, .24),
+    inset 0 1px rgba(255, 255, 255, .45);
+}
+
+.space-button:hover::before {
+  transform: translateX(120%);
+}
+
+.space-button:active {
+  transform: translateY(4px);
+  box-shadow:
+    0 1px 0 var(--button-side),
+    0 2px 0 rgba(0, 0, 0, .2),
+    0 3px 9px rgba(54, 155, 255, .12),
+    inset 0 2px 7px rgba(0, 10, 30, .22);
+}
+
+.space-button:focus-visible,
+.icon-button:focus-visible {
+  outline: 2px solid #e2f6ff;
+  outline-offset: 4px;
+}
+
+.button-violet {
+  --button-top: #b19bff;
+  --button-bottom: #7751d6;
+  --button-side: #4b3196;
+}
+
+.button-cyan {
+  --button-top: #63e8e2;
+  --button-bottom: #168db7;
+  --button-side: #105a82;
+}
+
+.button-dark {
+  --button-top: #2c4d79;
+  --button-bottom: #152c50;
+  --button-side: #0a1931;
+}
+
+.club-note {
+  color: #89b5db;
+  margin-top: 18px;
+  font: 10px/1.8 Arial, sans-serif;
+}
+
+.footer {
+  position: relative;
+  z-index: 2;
+  padding-top: 38px;
+  text-align: center;
+}
+
+.footer-ornament {
+  color: #7dcaff;
+  font-size: 20px;
+  letter-spacing: 5px;
+  text-shadow: 0 0 15px rgba(74, 172, 255, .32);
+}
+
+.footer-title {
+  margin-top: 14px;
+  color: #acdfff;
+  font-size: 12px;
+  letter-spacing: 3px;
+}
+
+.footer-caption {
+  margin-top: 9px;
+  color: #7099be;
+  font-size: 11px;
+  font-style: italic;
+  line-height: 1.8;
+}
+
+.cursor-orb {
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  width: 25px;
+  height: 25px;
+  border: 1px solid rgba(166, 225, 255, .85);
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(133, 211, 255, .2), transparent 70%);
+  box-shadow: 0 0 13px rgba(79, 177, 255, .3);
+  transition: width .15s, height .15s, opacity .2s, background .15s;
+}
+
+.cursor-orb::after {
+  content: "✦";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #d8f4ff;
+  font-size: 11px;
+}
+
+body.custom-cursor,
+body.custom-cursor a,
+body.custom-cursor button {
+  cursor: none;
+}
+
+body.custom-cursor .cursor-orb {
+  opacity: 1;
+}
+
+body.custom-cursor .cursor-orb.hovering {
+  width: 38px;
+  height: 38px;
+  background: rgba(83, 177, 255, .13);
+}
+
+body.custom-cursor .cursor-orb.hovering::after {
+  content: "✧";
+  font-size: 15px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: .72; filter: brightness(.9); }
+  50% { opacity: 1; filter: brightness(1.35); }
+}
+
+@keyframes nebulaDrift {
+  from { transform: translate3d(-1%, -1%, 0) scale(1); }
+  to { transform: translate3d(2%, 1%, 0) scale(1.06); }
+}
+
+@keyframes galaxyAppear {
+  from { opacity: 0; transform: perspective(1000px) rotateX(2deg) translateY(12px); }
+  to { opacity: 1; transform: perspective(1000px) rotateX(0) translateY(0); }
+}
+
+@media (min-width: 1000px) {
+  .galaxy {
+    padding: 40px 54px;
+  }
+
+  .hero {
+    padding-top: 8px;
+  }
+}
+
+@media (max-width: 650px) {
+  .page {
+    padding: 7px;
+  }
+
+  .galaxy {
+    min-height: calc(100svh - 14px);
+    padding: 17px clamp(12px, 4vw, 23px) 24px;
+    border-radius: 15px;
+  }
+
+  .topbar {
+    align-items: flex-start;
+    margin-bottom: 28px;
+  }
+
+  .brand img {
+    width: 34px;
+    height: 34px;
+  }
+
+  .brand-name {
+    font-size: 11px;
+    letter-spacing: 1px;
+  }
+
+  .brand-subtitle {
+    font-size: 8px;
+    letter-spacing: 1px;
+  }
+
+  .top-actions {
+    gap: 5px;
+  }
+
+  .icon-button {
+    min-height: 32px;
+    padding: 7px 8px;
+    font-size: 9px;
+  }
+
+  .welcome {
+    margin-top: 23px;
+  }
+
+  .feature-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+  }
+
+  .feature {
+    min-height: 112px;
+    padding: 15px 8px;
+  }
+
+  .club-card {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .stats {
+    gap: 8px;
+  }
+
+  .section {
+    margin-top: 30px;
+  }
+
+  .message {
+    margin-top: 30px;
+  }
+
+  .invitation {
+    margin-top: 27px;
+  }
+
+  .button-row {
+    gap: 12px;
+  }
+
+  .space-button {
+    flex: 1 1 100%;
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+@media (max-width: 350px) {
+  .topbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .top-actions {
+    justify-content: flex-start;
+  }
+
+  h1 {
+    font-size: 32px;
+    letter-spacing: 2px;
+  }
+
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .club-profile {
+    align-items: flex-start;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  body.custom-cursor,
+  body.custom-cursor a,
+  body.custom-cursor button {
+    cursor: auto;
+  }
+
+  .cursor-orb {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+</style>
 </head>
-
 <body>
+<canvas id="starfield" aria-hidden="true"></canvas>
+<div class="nebula" aria-hidden="true"></div>
+<div class="cursor-orb" id="cursorOrb" aria-hidden="true"></div>
 
-  <canvas id="starfield" aria-hidden="true"></canvas>
+<main class="page">
+<div class="galaxy">
+  <header class="topbar">
+    <div class="brand">
+      <img src="https://images.chesscomfiles.com/chess-clubs-images-prod/club-images/avatar/6756b78d-7b3e-4ca8-9892-9be054643825.jpg" alt="Lost Stars club avatar">
+      <div class="brand-copy">
+        <div class="brand-name">LOST STARS ♔</div>
+        <div class="brand-subtitle">Your place among the stars</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="icon-button" id="cursorToggle" type="button" aria-pressed="false">✧ CURSOR: OFF</button>
+      <button class="icon-button" id="motionToggle" type="button" aria-pressed="false">✦ MOTION: ON</button>
+    </div>
+  </header>
 
-  <main class="galaxy">
-
+  <section class="hero">
     <div class="ornament">✦ ⋆ ˚｡⋆ ✧ ⋆｡˚ ✦</div>
+    <div class="eyebrow">☾ A CHESS CLUB BEYOND THE STARS ☽</div>
+    <h1>LOST STARS</h1>
+    <div class="tagline">Where lost stars find their way home.</div>
+    <div class="hero-divider">☾ ── ⋆ ✦ ⋆ ── ☽</div>
+    <p class="intro">
+      Somewhere between the moonlight and the stars, a little corner of the universe is waiting for you.
+      Find your constellation, make your next move, and become part of something extraordinary.
+    </p>
+  </section>
 
-    <div class="eyebrow">☾ BEYOND THE STARS ☽</div>
+  <section class="welcome panel">
+    <div class="section-heading">✦ WELCOME, TRAVELER ✦</div>
+    <p>Every star has a story. Every move begins a new one.</p>
+    <div class="small-italic">Your next adventure is only one move away.</div>
+  </section>
 
-    <h1>✧ LOST STARS ✧</h1>
-
-    <div class="tagline">
-      Where lost stars find their way home.
+  <section class="section">
+    <div class="section-heading center">♔ OUR LITTLE GALAXY ♕</div>
+    <div class="section-caption">A universe built around chess, friendship, and adventure.</div>
+    <div class="feature-grid">
+      <article class="feature panel">
+        <div class="feature-icon">♟</div>
+        <div class="feature-title">Chess Beneath the Stars</div>
+        <div class="feature-text">Every game tells a story.</div>
+      </article>
+      <article class="feature panel">
+        <div class="feature-icon">☾</div>
+        <div class="feature-title">A Place to Belong</div>
+        <div class="feature-text">Find your people.</div>
+      </article>
+      <article class="feature panel">
+        <div class="feature-icon">✧</div>
+        <div class="feature-title">New Adventures</div>
+        <div class="feature-text">Make every move count.</div>
+      </article>
+      <article class="feature panel">
+        <div class="feature-icon">♡</div>
+        <div class="feature-title">A Shared Universe</div>
+        <div class="feature-text">Every star matters.</div>
+      </article>
+      <article class="feature panel">
+        <div class="feature-icon">⋆</div>
+        <div class="feature-title">A Little Chaos</div>
+        <div class="feature-text">Expect the unexpected.</div>
+      </article>
+      <article class="feature panel">
+        <div class="feature-icon">♔</div>
+        <div class="feature-title">Your Next Chapter</div>
+        <div class="feature-text">Write it with us.</div>
+      </article>
     </div>
+  </section>
 
-    <div class="moon-divider">☾ ⋆ ✦ ⋆ ✧ ⋆ ✦ ⋆ ☽</div>
-
-    <section class="welcome">
-      <div class="section-title">✦ WELCOME, TRAVELER ✦</div>
-
-      <p>
-        Somewhere between the moonlight and the stars,
-        a little corner of the universe is waiting for you.
-      </p>
-
-      <div class="small-italic">
-        Every star has a story. Every move begins a new one.
+  <section class="section">
+    <div class="section-heading center">✦ YOUR GALAXY AT A GLANCE ✦</div>
+    <div class="club-card panel">
+      <div class="club-profile">
+        <img class="club-avatar" src="https://images.chesscomfiles.com/chess-clubs-images-prod/club-images/avatar/6756b78d-7b3e-4ca8-9892-9be054643825.jpg" alt="Lost Stars chess club">
+        <div class="club-info">
+          <div class="club-label">WELCOME TO</div>
+          <div class="club-name">Lost Stars ♔</div>
+          <div class="club-description">Find your place among the stars.</div>
+        </div>
       </div>
-    </section>
-
-    <div class="separator">✧ · ───── ✦ ───── · ✧</div>
-
-    <section>
-      <div class="galaxy-title">♔ OUR LITTLE GALAXY ♕</div>
-
-      <p class="features">
-        ✦ Chess beneath the stars<br>
-        ☾ A place to belong<br>
-        ✧ New friends &amp; new adventures<br>
-        ♡ A universe of possibilities<br>
-        ⋆ A little bit of chaos
-      </p>
-
-      <div class="little-stars">⋆｡°✩ ☾ ✩°｡⋆</div>
-    </section>
-
-    <section class="message">
-      <div class="message-heading">
-        ✦ A MESSAGE FROM THE STARS ✦
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-value" id="memberCount">—</div>
+          <div class="stat-label">Club Members</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">♔</div>
+          <div class="stat-label">One Community</div>
+        </div>
       </div>
+    </div>
+  </section>
 
-      <p class="quote">
-        "Not all those who wander are lost.
-        Some are simply searching for their constellation."
-      </p>
-
-      <div style="color:#72baf0;">✧ ⋆ ✧</div>
-    </section>
-
-    <div class="separator">✧ · ───── ✦ ───── · ✧</div>
-
-    <section>
-      <div class="constellation">
-        ✦ · · ✧ · ⋆<br>
-        · ✧ · ✦ ·<br>
-        ⋆ · ✦ · ✧<br>
-        · · ✧ · ✦
+  <section class="section panel members-panel">
+    <div class="members-heading">
+      <div class="section-heading">✦ NEWEST STARS ✦</div>
+      <div class="live-label"><span class="live-dot"></span><span id="memberLiveLabel">CLUB MEMBERS</span></div>
+    </div>
+    <div class="member-list" id="memberList" aria-live="polite">
+      <div class="member">
+        <div class="member-avatar">✧</div>
+        <div class="member-details">
+          <div class="member-name">Looking for new stars...</div>
+          <div class="member-meta">Connecting to the constellation</div>
+        </div>
       </div>
-
-      <div class="constellation-caption">
-        Even the smallest stars shine brightest together.
+      <div class="member">
+        <div class="member-avatar">☾</div>
+        <div class="member-details">
+          <div class="member-name">The galaxy is waiting</div>
+          <div class="member-meta">Member information loading</div>
+        </div>
       </div>
-    </section>
+      <div class="member">
+        <div class="member-avatar">♔</div>
+        <div class="member-details">
+          <div class="member-name">Your next adventure</div>
+          <div class="member-meta">Starts here</div>
+        </div>
+      </div>
+    </div>
+    <div class="member-status" id="memberStatus">Attempting to load public club information...</div>
+  </section>
 
-    <div class="separator">✧ · ───── ✦ ───── · ✧</div>
+  <section class="message panel">
+    <div class="quote-mark">✧</div>
+    <div class="section-heading">A MESSAGE FROM THE STARS</div>
+    <div class="quote">“Not all those who wander are lost. Some are simply searching for their constellation.”</div>
+    <div class="quote-attribution">✦ EVERY STAR HAS A PLACE ✦</div>
+  </section>
 
-    <section class="invitation">
-      <div class="invitation-title">✦ FIND YOUR PLACE ✦</div>
+  <section class="invitation">
+    <div class="ornament">⋆｡°✩ ☾ ✩°｡⋆</div>
+    <div class="invitation-title">✦ FIND YOUR PLACE ✦</div>
+    <p>The night sky is endless, but there's always room for one more star.</p>
+    <p>Come join our little galaxy. Your story belongs here, too.</p>
+    <div class="button-row">
+      <a class="space-button" href="https://www.chess.com/club/lost-stars/join/8f6546?utm_campaign=club_invite_link&amp;utm_source=chesscom&amp;utm_medium=copy" target="_blank" rel="noopener noreferrer">♔ JOIN LOST STARS ↗</a>
+      <button class="space-button button-violet" id="copyInvite" type="button">✧ COPY INVITE LINK</button>
+      <a class="space-button button-cyan" href="https://www.chess.com/club/lost-stars" target="_blank" rel="noopener noreferrer">☾ VISIT THE CLUB ↗</a>
+    </div>
+    <div class="club-note" id="copyStatus" aria-live="polite">✦ LOST STARS CHESS CLUB ✦</div>
+  </section>
 
-      <p>
-        The night sky is endless,<br>
-        but there's always room<br>
-        for one more star.
-      </p>
-
-      <div class="invited">♡ You're invited ♡</div>
-
-      <a
-        id="inviteButton"
-        class="invite-button"
-        href="https://www.chess.com/club/lost-stars/join/8f6546?utm_campaign=club_invite_link&amp;utm_source=chesscom&amp;utm_medium=copy"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        ✧ COPY INVITE LINK ✧
-      </a>
-
-      <div class="club-name">✦ Lost Stars Chess Club ✦</div>
-    </section>
-
-    <div class="closing">☾ ⋆⁺₊✧ ₊˚⊹♡⊹˚₊ ✧₊⁺⋆ ☽</div>
-
-    <div class="cosmos">SOMEWHERE IN THE COSMOS</div>
-
+  <footer class="footer">
     <div class="footer-ornament">✧ ⋆ ˚｡⋆ ✦ ⋆｡˚ ⋆ ✧</div>
+    <div class="footer-title">♔ MAY YOUR STARS ALIGN ♕</div>
+    <div class="footer-caption">Forever among the stars. ✦</div>
+  </footer>
+</div>
+</main>
 
-    <div class="final-words">♔ MAY YOUR STARS ALIGN ♕</div>
+<script>
+(() => {
+  const canvas = document.getElementById("starfield");
+  const ctx = canvas.getContext("2d");
+  const body = document.body;
+  const cursorOrb = document.getElementById("cursorOrb");
+  const cursorToggle = document.getElementById("cursorToggle");
+  const motionToggle = document.getElementById("motionToggle");
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const coarsePointer = window.matchMedia("(pointer: coarse)");
+  const memberCount = document.getElementById("memberCount");
+  const memberList = document.getElementById("memberList");
+  const memberStatus = document.getElementById("memberStatus");
+  const memberLiveLabel = document.getElementById("memberLiveLabel");
+  const copyInvite = document.getElementById("copyInvite");
+  const copyStatus = document.getElementById("copyStatus");
+  const inviteURL = "https://www.chess.com/club/lost-stars/join/8f6546?utm_campaign=club_invite_link&utm_source=chesscom&utm_medium=copy";
+  const clubAPI = "https://api.chess.com/pub/club/lost-stars/members";
+  const avatarURL = "https://images.chesscomfiles.com/chess-clubs-images-prod/club-images/avatar/6756b78d-7b3e-4ca8-9892-9be054643825.jpg";
 
-    <div class="last-line">
-      Forever among the stars. ✦
-    </div>
+  let stars = [];
+  let width = 0;
+  let height = 0;
+  let animationId = 0;
+  let customCursor = false;
+  let motionEnabled = !reducedMotion.matches;
+  let pointerX = innerWidth / 2;
+  let pointerY = innerHeight / 3;
+  let tiltFrame = 0;
 
-  </main>
+  function resizeCanvas() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+    canvas.style.width = width + "px";
+    canvas.style.height = height + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const count = Math.min(220, Math.max(60, Math.floor(width * height / 4500)));
+    stars = Array.from({ length: count }, () => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      r: Math.random() * 1.25 + .25,
+      a: Math.random() * .65 + .2,
+      phase: Math.random() * Math.PI * 2,
+      speed: Math.random() * .0009 + .0002,
+      hue: Math.random() > .85 ? 250 : 205
+    }));
+    if (!motionEnabled) drawStars(0);
+  }
 
-  <script>
-    // Twinkling animated starfield
-    (() => {
-      const canvas = document.getElementById("starfield");
-      const ctx = canvas.getContext("2d");
+  function drawStars(time) {
+    if (!ctx) return;
+    ctx.clearRect(0, 0, width, height);
+    for (const star of stars) {
+      const twinkle = motionEnabled ? Math.sin(time * star.speed + star.phase) * .25 : 0;
+      const alpha = Math.max(.08, Math.min(1, star.a + twinkle));
+      ctx.beginPath();
+      ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(${star.hue}, 100%, 85%, ${alpha})`;
+      ctx.shadowBlur = star.r > 1.1 ? 8 : 3;
+      ctx.shadowColor = "#67bfff";
+      ctx.fill();
+    }
+    ctx.shadowBlur = 0;
+    if (motionEnabled) animationId = requestAnimationFrame(drawStars);
+  }
 
-      if (!ctx) return;
+  function startStars() {
+    cancelAnimationFrame(animationId);
+    if (motionEnabled) animationId = requestAnimationFrame(drawStars);
+    else drawStars(0);
+  }
 
-      let stars = [];
-      let width = 0;
-      let height = 0;
-      let animationId;
+  function setMotion(enabled) {
+    motionEnabled = enabled && !reducedMotion.matches;
+    body.classList.toggle("no-motion", !motionEnabled);
+    motionToggle.textContent = motionEnabled ? "✦ MOTION: ON" : "✦ MOTION: OFF";
+    motionToggle.setAttribute("aria-pressed", String(!motionEnabled));
+    startStars();
+  }
 
-      const reducedMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)"
-      ).matches;
+  motionToggle.addEventListener("click", () => {
+    setMotion(!motionEnabled);
+  });
 
-      function resizeCanvas() {
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  reducedMotion.addEventListener?.("change", event => {
+    if (event.matches) setMotion(false);
+  });
 
-        width = window.innerWidth;
-        height = window.innerHeight;
+  function setCursor(enabled) {
+    customCursor = enabled && !coarsePointer.matches;
+    body.classList.toggle("custom-cursor", customCursor);
+    cursorToggle.textContent = customCursor ? "✧ CURSOR: ON" : "✧ CURSOR: OFF";
+    cursorToggle.setAttribute("aria-pressed", String(customCursor));
+    if (!customCursor) cursorOrb.classList.remove("hovering");
+  }
 
-        canvas.width = width * dpr;
-        canvas.height = height * dpr;
-        canvas.style.width = width + "px";
-        canvas.style.height = height + "px";
+  cursorToggle.addEventListener("click", () => {
+    setCursor(!customCursor);
+  });
 
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  window.addEventListener("pointermove", event => {
+    pointerX = event.clientX;
+    pointerY = event.clientY;
+    if (customCursor) {
+      cursorOrb.style.left = pointerX + "px";
+      cursorOrb.style.top = pointerY + "px";
+    }
+    if (!coarsePointer.matches && motionEnabled) {
+      document.documentElement.style.setProperty("--mx", pointerX + "px");
+      document.documentElement.style.setProperty("--my", pointerY + "px");
+    }
+  }, { passive: true });
 
-        const count = Math.min(
-          180,
-          Math.floor((width * height) / 5000)
-        );
+  document.addEventListener("pointerover", event => {
+    if (event.target.closest("a, button")) cursorOrb.classList.add("hovering");
+  });
 
-        stars = Array.from({ length: count }, () => ({
-          x: Math.random() * width,
-          y: Math.random() * height,
-          radius: Math.random() * 1.4 + 0.3,
-          alpha: Math.random() * 0.65 + 0.2,
-          speed: Math.random() * 0.012 + 0.003,
-          phase: Math.random() * Math.PI * 2
-        }));
+  document.addEventListener("pointerout", event => {
+    if (event.target.closest("a, button")) cursorOrb.classList.remove("hovering");
+  });
 
-        if (reducedMotion) drawStars(0);
-      }
+  document.querySelectorAll(".galaxy").forEach(galaxy => {
+    galaxy.addEventListener("pointermove", event => {
+      if (!motionEnabled || coarsePointer.matches || tiltFrame) return;
+      tiltFrame = requestAnimationFrame(() => {
+        tiltFrame = 0;
+        const rect = galaxy.getBoundingClientRect();
+        const px = (event.clientX - rect.left) / rect.width;
+        const py = (event.clientY - rect.top) / rect.height;
+        const rx = (0.5 - py) * 1.3;
+        const ry = (px - 0.5) * 1.3;
+        galaxy.style.transform = `perspective(1400px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+      });
+    });
+    galaxy.addEventListener("pointerleave", () => {
+      galaxy.style.transform = "";
+    });
+  });
 
-      function drawStars(time) {
-        ctx.clearRect(0, 0, width, height);
+  function safeText(element, text) {
+    element.textContent = String(text ?? "");
+  }
 
-        for (const star of stars) {
-          const twinkle = reducedMotion
-            ? 0
-            : Math.sin(time * star.speed + star.phase) * 0.3;
+  function makeMember(member, index) {
+    const row = document.createElement("div");
+    row.className = "member";
 
-          const alpha = Math.max(
-            0.1,
-            Math.min(1, star.alpha + twinkle)
-          );
+    const avatar = document.createElement("div");
+    avatar.className = "member-avatar";
 
-          ctx.beginPath();
-          ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+    if (index === 0) {
+      const img = document.createElement("img");
+      img.src = avatarURL;
+      img.alt = "";
+      img.loading = "lazy";
+      avatar.appendChild(img);
+    } else {
+      safeText(avatar, ["✦", "☾", "♔"][index % 3]);
+    }
 
-          ctx.fillStyle = `rgba(190, 225, 255, ${alpha})`;
-          ctx.shadowBlur = star.radius > 1.2 ? 8 : 3;
-          ctx.shadowColor = "#70caff";
-          ctx.fill();
-        }
+    const details = document.createElement("div");
+    details.className = "member-details";
 
-        ctx.shadowBlur = 0;
+    const name = document.createElement("div");
+    name.className = "member-name";
+    safeText(name, member.username || member.name || "Unknown player");
 
-        if (!reducedMotion) {
-          animationId = requestAnimationFrame(drawStars);
-        }
-      }
+    const meta = document.createElement("div");
+    meta.className = "member-meta";
+    const joined = Number(member.joined);
+    if (Number.isFinite(joined) && joined > 0) {
+      const date = new Date(joined * 1000);
+      safeText(meta, "Joined " + date.toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "numeric"
+      }));
+    } else {
+      safeText(meta, "Lost Stars community member");
+    }
 
-      window.addEventListener("resize", resizeCanvas);
+    const rank = document.createElement("div");
+    rank.className = "member-rank";
+    safeText(rank, index === 0 ? "✧" : index === 1 ? "⋆" : "☾");
 
-      resizeCanvas();
+    details.append(name, meta);
+    row.append(avatar, details, rank);
+    return row;
+  }
 
-      if (!reducedMotion) {
-        animationId = requestAnimationFrame(drawStars);
-      }
+  function renderFallback(message) {
+    memberList.replaceChildren();
 
-      window.addEventListener("pagehide", () => {
-        if (animationId) {
-          cancelAnimationFrame(animationId);
+    const placeholders = [
+      ["✧", "New stars await", "Join the Lost Stars community"],
+      ["☾", "Your name could be here", "Become part of our galaxy"],
+      ["♔", "Make your next move", "Meet us on Chess.com"]
+    ];
+
+    placeholders.forEach((item, index) => {
+      const row = document.createElement("div");
+      row.className = "member";
+
+      const avatar = document.createElement("div");
+      avatar.className = "member-avatar";
+      safeText(avatar, item[0]);
+
+      const details = document.createElement("div");
+      details.className = "member-details";
+
+      const name = document.createElement("div");
+      name.className = "member-name";
+      safeText(name, item[1]);
+
+      const meta = document.createElement("div");
+      meta.className = "member-meta";
+      safeText(meta, item[2]);
+
+      details.append(name, meta);
+      row.append(avatar, details);
+      memberList.appendChild(row);
+    });
+
+    safeText(memberStatus, message);
+    safeText(memberLiveLabel, "CLUB PREVIEW");
+  }
+
+  async function loadMembers() {
+    try {
+      const response = await fetch(clubAPI, {
+        headers: { "Accept": "application/json" },
+        mode: "cors",
+        cache: "no-cache"
+      });
+
+      if (!response.ok) throw new Error("Club member data is unavailable");
+
+      const data = await response.json();
+      const allMembers = Array.isArray(data.all_time) ? data.all_time : [];
+      const weekly = Array.isArray(data.weekly) ? data.weekly : [];
+      const monthly = Array.isArray(data.monthly) ? data.monthly : [];
+
+      const unique = new Map();
+      [...allMembers, ...monthly, ...weekly].forEach(member => {
+        if (member && member.username) {
+          unique.set(member.username.toLowerCase(), member);
         }
       });
-    })();
 
-    // Copy the invite URL when the button is clicked.
-    (() => {
-      const button = document.getElementById("inviteButton");
+      const members = Array.from(unique.values());
+      const total = allMembers.length || members.length;
 
-      const originalText = "✧ COPY INVITE LINK ✧";
+      if (!members.length) {
+        memberCount.textContent = total ? String(total) : "—";
+        renderFallback("The public member list did not contain member details.");
+        return;
+      }
 
-      button.addEventListener("click", async (event) => {
-        event.preventDefault();
-
-        const inviteURL = button.href;
-
-        try {
-          if (navigator.clipboard && window.isSecureContext) {
-            await navigator.clipboard.writeText(inviteURL);
-          } else {
-            const temporaryInput = document.createElement("textarea");
-
-            temporaryInput.value = inviteURL;
-            temporaryInput.style.position = "fixed";
-            temporaryInput.style.opacity = "0";
-
-            document.body.appendChild(temporaryInput);
-            temporaryInput.select();
-
-            const copied = document.execCommand("copy");
-            temporaryInput.remove();
-
-            if (!copied) {
-              throw new Error("Copy was unsuccessful");
-            }
-          }
-
-          button.textContent = "✦ LINK COPIED! ✦";
-
-          setTimeout(() => {
-            button.textContent = originalText;
-          }, 2200);
-
-        } catch (error) {
-          // Keep the actual invite link accessible if copying fails.
-          button.textContent = "✦ OPEN INVITE LINK ✦";
-          window.open(inviteURL, "_blank", "noopener,noreferrer");
-
-          setTimeout(() => {
-            button.textContent = originalText;
-          }, 2200);
-        }
+      members.sort((a, b) => {
+        const aJoined = Number(a.joined) || 0;
+        const bJoined = Number(b.joined) || 0;
+        return bJoined - aJoined;
       });
-    })();
-  </script>
 
+      memberCount.textContent = total ? total.toLocaleString() : String(members.length);
+      memberList.replaceChildren();
+      members.slice(0, 3).forEach((member, index) => {
+        memberList.appendChild(makeMember(member, index));
+      });
+
+      safeText(memberStatus, "Member information loaded from the public Chess.com club API.");
+      safeText(memberLiveLabel, "API CONNECTED");
+    } catch (error) {
+      memberCount.textContent = "—";
+      renderFallback("Live member information is unavailable here. Chess.com may block browser requests or limit public data.");
+    }
+  }
+
+  copyInvite.addEventListener("click", async () => {
+    const original = "✧ COPY INVITE LINK";
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(inviteURL);
+      } else {
+        const input = document.createElement("textarea");
+        input.value = inviteURL;
+        input.setAttribute("readonly", "");
+        input.style.position = "fixed";
+        input.style.opacity = "0";
+        document.body.appendChild(input);
+        input.select();
+        const copied = document.execCommand("copy");
+        input.remove();
+        if (!copied) throw new Error("Copy failed");
+      }
+      copyInvite.textContent = "✦ LINK COPIED!";
+      safeText(copyStatus, "The invitation link has been copied to your clipboard.");
+    } catch (error) {
+      safeText(copyStatus, "Clipboard access is unavailable. Use the Join button to open the invitation.");
+      window.open(inviteURL, "_blank", "noopener,noreferrer");
+      copyInvite.textContent = "✦ OPENED INVITE";
+    }
+    window.setTimeout(() => {
+      copyInvite.textContent = original;
+      safeText(copyStatus, "✦ LOST STARS CHESS CLUB ✦");
+    }, 2600);
+  });
+
+  window.addEventListener("resize", resizeCanvas, { passive: true });
+  window.addEventListener("pagehide", () => cancelAnimationFrame(animationId));
+
+  resizeCanvas();
+  setMotion(!reducedMotion.matches);
+  setCursor(false);
+  loadMembers();
+})();
+</script>
 </body>
 </html>
